@@ -1,21 +1,18 @@
 ```mermaid
-flowchart TB
-    %% Client
-    A[Client (Web / Mobile)]
+flowchart LR
+    Client["Client (Mobile/Web)"]
+    GQL["GraphQL Gateway / API Server"]
 
-    %% GraphQL Gateway
-    A -->|GraphQL Request (HTTP / WebSocket)| B[GraphQL Gateway / Server]
+    subgraph Microservices
+        Auth["Auth Service"]
+        User["User Service"]
+        Post["Posts Service"]
+        Comment["Comments Service"]
+    end
 
-    %% Services
-    B -->|HTTP| C[Auth Service]
-    B -->|gRPC| D[Product Service]
-    B -->|HTTP| E[Order Service]
-
-    %% Message Queue
-    C --> F[Message Queue]
-    D --> F
-    E --> F
-
-    %% Inventory
-    F --> G[Inventory Service / Database]
+    Client -->|GraphQL Query| GQL
+    GQL --> Auth
+    GQL --> User
+    GQL --> Post
+    GQL --> Comment
 ```
