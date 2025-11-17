@@ -1,0 +1,33 @@
+1. Jelaskan teorema CAP dan BASE dan keterkaitan keduanya. Jelaskan menggunakan contoh yang pernah anda gunakan. 
+2. Jelaskan keterkaitan antara GraphQL dengan komunikasi antar proses pada sistem terdistribusi. Buat diagramnya. 
+3. Dengan menggunakan Docker / Docker Compose, buatlah streaming replication di PostgreSQL yang bisa menjelaskan sinkronisasi.
+Tulislah langkah-langkah pengerjaannya dan buat penjelasan secukupnya.
+
+Jawaban : 
+1. CAP 
+C : Consistency : Semua node akan melihat data yang sama secara serentak setelah ipdate 
+A : Avaibility : Di setiap request mendapat ressponse, walau mungkin response itu tidak akan selalu update
+P : Partition tolerance : sistem terus berjalan walau ada pemutusan / gangguan jaringan antar node. 
+Teorema : Dengan adannya Partitioon (P) yang nyata dalam sebuah sistem terdistribusi tidak akan bisa menjamin c dan a seklaigus. 
+sehingga partisi mungkin akan membuat keadaan tidak konsisten. 
+- BASE 
+B : Basically Available : Sistem akan merespons walau tidak akan selalu dengan data baru. 
+S : Soft State : State dqapat berubah tanpa input baru dikarenakan replikasi
+E : Eventual Consistency : Dimana Akhirnnya semua node akan sama jika tidak akan ada update baru.
+CAP adalah batas teori, dan BASEadalah pendekatan praktik yang cocok. 
+Contoh : 
+- Firebase dirancang untuk responsivitas & offline: klien bisa menulis data saat offline, aplikasi tetap interaktif, 
+lalu data disinkronkan saat koneksi pulih ini jelas 
+- Basically Available dan Eventual consistency.
+Bila ada gangguan jaringan di antara klien dan server (partition), Firebase tetap melayani operasi di sisi klien (A),
+sambil menerima bahwa konsistensi penuh baru tercapai setelah sinkronisasi (mengikuti BASE).
+- Kalau aplikasi strong consistency (mis. transfer uang), Firebase replikasi eventual bisa berisiko. 
+Untuk itu sistem perbankan memilih desain yang mengutamakan C (mungkin mengorbankan A saat partition).
+
+2. Inti Hubungan : 
+- GraphQL adalah query language + runtime untuk API yang memungkinkan klien meminta data persis yang akan dibutuhakan
+- Di sistem terdistribusi GraphQL akan sering dipakai sebagai query atau aggretion layer yang 
+akan menyatukan data dari banyak layanan internal
+- IPC yang akan dipakai bisa bermacam-macam : HTTP REST panggilan antar-microservice, gRPC, message queue (RabbitMQ/Kafka), atau langsung query DB.
+GraphQL server meng-orchestrate banyak panggilan IPC dan mengembalikan satu response.
+
