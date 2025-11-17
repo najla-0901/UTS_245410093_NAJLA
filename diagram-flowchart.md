@@ -1,10 +1,21 @@
 ```mermaid
-flowchart TD
-    A[Mulai] --> B[User membuka aplikasi]
-    B --> C{Koneksi Internet?}
-    C -- Ya --> D[Muat data dari Firebase]
-    C -- Tidak --> E[Tampilkan pesan offline]
-    D --> F[Tampilkan data realtime]
+flowchart TB
+    %% Client
+    A[Client (Web / Mobile)]
+
+    %% GraphQL Gateway
+    A -->|GraphQL Request (HTTP / WebSocket)| B[GraphQL Gateway / Server]
+
+    %% Services
+    B -->|HTTP| C[Auth Service]
+    B -->|gRPC| D[Product Service]
+    B -->|HTTP| E[Order Service]
+
+    %% Message Queue
+    C --> F[Message Queue]
+    D --> F
     E --> F
-    F --> G[Selesai]
+
+    %% Inventory
+    F --> G[Inventory Service / Database]
 ```
